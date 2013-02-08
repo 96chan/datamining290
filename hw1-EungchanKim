@@ -1,0 +1,34 @@
+Eungchan Kim
+Assignment1
+
+- What are the types of data available to you?
+I extracted meta data of pictures I've taken from my iPhone since I arrived 
+in the United States, last August 14th. The meta data included when I took 
+pictures, what resolution I used, and even where I took them. 
+
+- For data sets: how many records are in the data set?
+It has 1136 records, which means that I've taken 1136 pictures in the 
+United States.
+
+- For API: what are the limits on fetching data?
+I didn't use API. I used Python Library, which called PIL(Python Image 
+Library, http://www.pythonware.com/products/pil). To understand GPS data, I 
+should convert the GPS coordinates stored in the EXIF to degrees in float 
+format, latitude and longitude. 
+
+- Provide an "interesting" record, explain its properties and why it is 
+interesting.
+Record itself doesn't provide interesting insights.
+However, if I aggregated those data and sorted them by the day of the week, 
+I could get the following records which addressed I had a tendency to take 
+more pictures on Friday and Saturday than others. It can be explained that 
+I might travel more frequently on those days than other days.
+
+Mon     Tue     Wed	Thu	Fri	Sat	Sun
+133	103	130	178	202	235	155
+
+
+- What are 3 questions you could answer using your data?
+1) What time of day did I like to take photos most? 
+2) What place or region did I take photos most?  
+3) What day of the week did I take photos far from home?
