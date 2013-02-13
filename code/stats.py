@@ -35,17 +35,19 @@ def get_std(s):
 def get_candidate(s):
     return list(set(s)) 
 
+mean_ = get_mean(conb_amt_array)
 min_ = min(conb_amt_array)
 max_ = max(conb_amt_array)
+std_ = get_std(conb_amt_array)
 
 ##### Print out the stats
 print "Total: %s" % total
 print "Minimum:%s" % min_
 print "Maximum:%s" % max_
-print "Mean: %s" % get_mean(conb_amt_array) 
+print "Mean: %s" % mean_ 
 print "Median: %s" % get_median(conb_amt_array)
 # square root can be calculated with N**0.5
-print "Standard Deviation:%s " % get_std(conb_amt_array)
+print "Standard Deviation:%s " % std_
 
 ##### Comma separated list of unique candidate names
 print "Candidates:%s " % get_candidate(cand_nm_array)
@@ -56,6 +58,13 @@ def minmax_normalize(value):
     norm = 0+(1-0)*(value-min_)/(max_-min_) 
     return norm
 
+## EXTRA CREDIT ##
+def z_score(value):
+    norm = (value-mean_)/std_
+    return norm
+
+
 ##### Normalize some sample values
 print "Min-max normalized values: %r" % map(minmax_normalize, [2500, 50, 250, 35, 8, 100, 19])
+print "Z-score normalized values: %r" % map(z_score, [2500,50,250,35,8,100,19])
 
