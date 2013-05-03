@@ -1,0 +1,60 @@
+Eungchan Kim
+2012.5.2
+
+5. What does ETL stand for?
+A: Extract, Transform, Load
+W: For describing the process to move the data from other source into Data Warehouse.
+
+7.4 Pivot
+A: Swap, or rotate dimensions (changing axis on a chart)
+W: There are several advantages to using pivot tables. 
+One advantage is that a pivot table summarizes the data contained in a long list into a compact format. 
+A pivot table can also help one find relationships within the data that are otherwise hard to see because of the amount of detail. 
+Yet another advantage is that a pivot table organizes the data into a format that is very easy to convert into charts.
+(from http://www.learn.geekinterview.com/data-warehouse/data-profiling/what-is-data-pivot.html)
+
+8. Put the following steps for building a classifier in the correct chronological order
+A:
+1) Prepare training data
+5) Set aside hold-out set
+2) Teach classifier
+6) Save model parameters
+7) Verification with testing data
+4) Input unlabeled new data into model
+3) Output guesses on new data
+
+W:
+If you can only use limited data for both training and testing, you need to set aside hold-out set before training.
+Otherwise, there is no way to verify the model you create from training process.
+ 
+
+10. What is information gain and how is it used to build decision tree?
+A&W:
+Information Gain is the expected reduction in entropy caused by partitioning the examples according to a given attribute.
+It simply represents comparison of how mixed results are before and after splitting.
+For example, two pure data sets have less entropy on average than one mixed.
+
+A Decision Tree is a tree-structured plan of a set of attributes to test in order to predict the output.
+1) To decide which attribute should be tested first, 
+2) simply find the one with the highest information gain, 
+3) then recurse.
+(from http://www.math.unipd.it/~aiolli/corsi/0708/IR/Lez12.pdf)
+
+
+11. Fixing gradient descent
+A: moving in correct direction
+W: Outcome here in the example is getting bigger which means your program is going to wrong direction to find solution.
+In this case, you need to change the sign of gradient and see if the RMSE goes smaller or closer to 0. 
+One more thing you need to keep in mind is that use appropriate size of step by choosing right weight(alpha).
+
+
+14. Draw a dendrogram showing clustering for these points
+A:
+1) B,D and C,E
+2) A,B,D and C,E
+3) A,B,D,C,E
+
+W: The order of clustering is important to draw the dendrogram. 
+The clustering method used will depend on the units being grouped together. The objective is to put like units into small groups 
+and then similar small groups into larger groups, until the whole list is in a single cluster. 
+(from http://www.ehow.com/how_5232863_draw-dendrogram.html)
