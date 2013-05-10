@@ -1,0 +1,212 @@
+<!--
+Builder : Eungchan Kim (96chany@berkeley.edu)
+
+Dataset : 
+1) TEDx data from Youtube user id = TEDxtalks
+	- using YOUTUBE API 
+2) TED data from http://www.ted.com/translate/languages
+
+Dependencies :
+tested in Chrome, FireFox, Safari
+
+-->
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<title>Comparison TED and TEDx </title>
+<head>
+<style>
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+label {
+  position: absolute;
+  top: 90px;
+  left: 900px;
+}
+form{
+	position:absolute;
+	top:118px;
+	left:920px;
+}
+</style>
+<script src="jquery-1.9.1.min.js"></script>
+<script src="d3.v3.min.js"></script>
+</head>
+<body>
+<label><input class="cb" type="checkbox"> Sort Values</label>
+<form>
+	<input class="rb" type="radio" name="type" value="TED" checked><br>
+	<input class="rb" type="radio" name="type" value="TEDx">
+</form>
+
+<script>
+
+var margin = {top: 20, right: 20, bottom: 120, left: 80},
+    width = 1000 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+var x0 = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var x1 = d3.scale.ordinal();
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var color = d3.scale.ordinal()
+    .range(["#CC7468", "#2E3438"]);
+
+var xAxis = d3.svg.axis()
+    .scale(x0)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format(".2s"));
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.csv("./ted_tedx.csv", function(error, data) {
+  // English , 1984 , 15684
+  // Portuguese , 7390 , 913
+
+  var video_cnt = d3.keys(data[0]).filter(function(key) { return key !== "Language"; });
+
+  data.forEach(function(d) {
+    d.v_cnt = video_cnt.map(function(name) {return {name: name, value: +d[name]}; });
+ });
+
+  x0.domain(data.map(function(d) { return d.Language; }));
+  x1.domain(video_cnt).rangeRoundBands([0, x0.rangeBand()]);
+  y.domain([0, d3.max(data, function(d) { return d3.max(d.v_cnt, function(d) { return d.value; }); })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+
+  svg.selectAll("text")
+		.attr("x",-10)
+		.attr("y",-5)
+		.style("text-anchor","end")
+		.attr("transform","rotate(-90)");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -50)
+	  .attr("x", -180)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+	  .style("font-size","14px")
+	  .text("Number of Videos");
+
+  var lang = svg.selectAll(".Language")
+      .data(data)
+      .enter().append("g")
+      .attr("class", "Language")
+      .attr("transform", function(d) {return "translate(" + x0(d.Language) + ")"; });
+	
+  lang.selectAll("rect")
+      .data(function(d) { return d.v_cnt; })
+    .enter().append("rect")
+      .attr("width", x1.rangeBand())
+      .attr("x", function(d) { return x1(d.name); })
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); })
+      .style("fill", function(d) { return color(d.name); });
+	
+  
+//legend
+  var legend = svg.selectAll(".legend")
+      .data(video_cnt.slice())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+	  .attr("y", 92)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 100)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
+
+  // x-axis label
+  svg.append("text")
+	.attr("x",450)
+	.attr("y",560)
+	.style("font-size","14px")
+	.text("Languages");
+  // title
+  svg.append("text")
+	.attr("x",330)
+	.attr("y",0)
+	.style("font-size","18px")
+	.style("fill","#404040")
+	.text("Comparison between TED and TEDx");
+  
+  //transition
+  d3.select(".cb").on("change", change);
+  var sortTimeout = setTimeout(function() {
+    	d3.select(".cb").property("checked", true).each(change);
+  }, 2000);
+
+  function change() {
+	clearTimeout(sortTimeout);
+	var i = 0;
+	if ($("input[name=type]:checked").val() == 'TED'){
+		i = 0;
+	}
+	else {i = 1;}
+    // Copy-on-write since tweens are evaluated after a delay.
+    var x3 = x0.domain(data.sort(this.checked
+        ? function(a, b) { return b.v_cnt[i].value - a.v_cnt[i].value; }
+        : function(a, b) { return d3.ascending(a.Language, b.Language); })
+        .map(function(d) { return d.Language; }));
+
+	lang.transition()
+		.delay(function(d,i){return i*20;})
+		.duration(750)
+		.attr("transform", function(d) {return "translate(" + x3(d.Language) + ")"; })
+		
+    var x_axis = svg.selectAll(".x.axis")
+	   .transition()
+	   .delay(function(d,i){return i*3;})
+       .call(xAxis)
+      .selectAll("g");
+	x_axis.selectAll("text")
+		.attr("x",-10)
+		.attr("y",-5)
+		.style("text-anchor","end")
+		.attr("transform","rotate(-90)");
+	}
+});
+</script>
+</body>
+</html>
